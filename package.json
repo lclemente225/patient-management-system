@@ -17,8 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "theme-change": "^2.5.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "github:tailwindcss/typography",

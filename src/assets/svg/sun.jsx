@@ -3,7 +3,7 @@ import React from 'react'
 const Sun = () => {
   return (
     <svg
-    className="swap-off h-10 w-10 fill-current"
+    className={`swap-off h-10 w-10 fill-current group-hover/label:fill-accent group-hover/label:scale-90`}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24">
     <path

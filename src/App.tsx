@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import {AdminHome} from './components/index';
+import { DateProvider } from './lib/contexts/date';
 import "./App.css";
 
 
@@ -7,9 +7,11 @@ function App() {
 
   return (
     <>
-      <div className=''>
-        <AdminHome/>
-      </div>
+      <DateProvider>
+        <div className='font-serif'>
+          <AdminHome/>
+        </div>
+      </DateProvider>
     </>
   );
 }

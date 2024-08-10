@@ -2,21 +2,21 @@ const dummyData = [
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "May 30",
+        appointmentDate: "May 30 2024",
         appointmentTime: "1200",
         appointmentType: "composite"
     },
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "January 30",
+        appointmentDate: "January 30 2024",
         appointmentTime: "1200",
         appointmentType: "composite"
     },
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "February 30",
+        appointmentDate: "February 30 2024",
         appointmentTime: "1200",
         appointmentType: "composite"
     }

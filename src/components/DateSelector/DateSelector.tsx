@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useDate } from '../../lib/contexts/date.js'
 import {months, days} from '../../lib/dateConverter.js'
+import {dateObjType} from './types.js' 
 
 const DateSelector = () => {
     const {date, setDate} = useDate()
@@ -95,11 +96,13 @@ const DateSelector = () => {
         }
     }
 
-    function JanOrDecMonthDayCalc(index, dateObj, monthDays, direction){
+    function JanOrDecMonthDayCalc(
+        index: number, 
+        dateObj: dateObjType, 
+        direction: Boolean){
         let newObj = {...dateObj}
         let newDayOfMonth = newObj.dayOfMonth;
         direction ? newDayOfMonth+=1 : newDayOfMonth-=1 
-        console.log("checking index of jan",index, newDayOfMonth, direction)
 
         if(index === 0){
             if(newDayOfMonth > 0 && newDayOfMonth <= months[0]["numberDays"]) { 
@@ -127,7 +130,7 @@ const DateSelector = () => {
         ){
             console.log("monthIndex, ", monthIndex)
         if(monthIndex === 0 || monthIndex === 11){
-            return JanOrDecMonthDayCalc(monthIndex, obj, months, direction)
+            return JanOrDecMonthDayCalc(monthIndex, obj, direction)
         }
         return dayOfMonthVarCalc(obj, direction, months)
     }

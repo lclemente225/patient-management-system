@@ -1,8 +1,16 @@
+import { useEffect } from 'react'
 import { useDate } from '../../lib/contexts/date.js'
 import {months, days} from '../../lib/dateConverter.js'
 
 const DateSelector = () => {
     const {date, setDate} = useDate()
+
+    useEffect(() => {
+        const thisDate = new Date();
+        const nextDay = thisDate.toString();
+        const separateDate = nextDay.match()
+        console.log("test date", thisDate, "\n Next day: ",nextDay,"\n separate DAte: ", separateDate)
+    },[])
 
     function monthIndexCalc(
         index: number, 
@@ -28,26 +36,33 @@ const DateSelector = () => {
 
     function JanOrDecMonthIndexCalc(
         index: number,
-        daysOfMonth: number, 
-        monthDays: number, 
+        dayOfMonth: number, 
         prevDayOfMonth: number
         ){
-        //if monthIndex = 0 or 11 trigger this function
-        console.log(daysOfMonth, monthDays)
         if(index === 0){
-            if(daysOfMonth === monthDays){
-                console.log("end of jan")
+            if(dayOfMonth === 31 && prevDayOfMonth === 1){
+                return 11
             }
+            if(dayOfMonth === 1 && prevDayOfMonth === 31){
+                return 1
+            }
+            
+        return 0
         }
         if(index === 11){
-            if(daysOfMonth === monthDays){
-                console.log("end of dec")
+            if(dayOfMonth === 1 && prevDayOfMonth === 31){
+                return 0
             }
+            if(dayOfMonth === 30 && prevDayOfMonth === 1){
+                return 10
+            }
+            
+        return 11
         }
-        return index
         //if days of month is the last day then go to feb or jan
         //if days of month is first day then same index or nov or dec
     }
+    //
 
     function selectMonthIndexCalc(
         index: number, 
@@ -56,15 +71,17 @@ const DateSelector = () => {
         prevDayOfMonth: number,
         prevMonthObj?: {name:string, numberDays: number}, 
         ){
-        if(index < 11 && index > 0){
-            return monthIndexCalc(index, dayOfMonth, monthDays, prevDayOfMonth, prevMonthObj)
-        }
         if(index === 0 || index === 11){
-            return JanOrDecMonthIndexCalc(index, dayOfMonth, monthDays, prevDayOfMonth)
+            return JanOrDecMonthIndexCalc(index, dayOfMonth, prevDayOfMonth)
         }
+        return monthIndexCalc(index, dayOfMonth, monthDays, prevDayOfMonth, prevMonthObj)
     }
 
-    function dayOfMonthVarCalc(obj: any, direction: Boolean) {
+    function dayOfMonthVarCalc(
+        obj: any, 
+        direction: Boolean, 
+        months:{name:string, numberDays: number}[]
+        ){
         //if day of month is less then the number of days
         let newObj = {...obj}
         let newDayOfMonth = newObj.dayOfMonth;
@@ -75,8 +92,44 @@ const DateSelector = () => {
         }else{
             //change month index to change month
             return direction ? 1 : months[newObj.monthIndex-1]["numberDays"]
-            
         }
+    }
+
+    function JanOrDecMonthDayCalc(index, dateObj, monthDays, direction){
+        let newObj = {...dateObj}
+        let newDayOfMonth = newObj.dayOfMonth;
+        direction ? newDayOfMonth+=1 : newDayOfMonth-=1 
+        console.log("checking index of jan",index, newDayOfMonth, direction)
+
+        if(index === 0){
+            if(newDayOfMonth > 0 && newDayOfMonth <= months[0]["numberDays"]) { 
+                return newDayOfMonth
+            }else{
+                //change month index to change month
+                return direction ? 1 : months[11]["numberDays"]
+            }
+        }
+        if(index === 11){
+            if(newDayOfMonth > 0 && newDayOfMonth <= months[11]["numberDays"]) { 
+                return newDayOfMonth
+            }else{
+                //change month index to change month
+                return direction ? 1 : months[10]["numberDays"]
+            }
+        }
+    }
+
+    function selectDayOfMonthIndexCalc(
+        monthIndex: number,
+        obj: any, 
+        direction: Boolean, 
+        months:{name:string, numberDays: number}[]
+        ){
+            console.log("monthIndex, ", monthIndex)
+        if(monthIndex === 0 || monthIndex === 11){
+            return JanOrDecMonthDayCalc(monthIndex, obj, months, direction)
+        }
+        return dayOfMonthVarCalc(obj, direction, months)
     }
 
     function changeDayOfWeek(direction: Boolean, dateObj: {dayIndex:number}){
@@ -91,17 +144,20 @@ const DateSelector = () => {
     function changeDay(direction: Boolean){
 
         setDate((dateObj: any) => {
+            //monthIndex(which month), 
+            //dayOfMonth(current numbered day of the month), 
+            //numberDays(total number of days in current month)
             let monthIndex = dateObj.monthIndex;
             let prevDayOfMonth = dateObj.dayOfMonth;
             let currMonthDays = dateObj.month.numberDays;
 
             let dayIndexVar = changeDayOfWeek(direction, dateObj)
             let dayOfWeekVar = days[dayIndexVar];
-            //dont touch dayOfMonthVar
-            let dayOfMonthVar = dayOfMonthVarCalc(dateObj, direction);
+            //dont touch dayOfMonthVar 
+            let dayOfMonthVar = selectDayOfMonthIndexCalc(monthIndex, dateObj, direction, months);
 
-            let monthIndexVal = selectMonthIndexCalc(0, dayOfMonthVar, currMonthDays, prevDayOfMonth, months[monthIndex-1]);
-            let monthVar = months[0];
+            let monthIndexVal = selectMonthIndexCalc(monthIndex, dayOfMonthVar, currMonthDays, prevDayOfMonth, months[monthIndex-1]);
+            let monthVar = months[monthIndexVal];
             return { 
                 ...dateObj, 
                 dayIndex: dayIndexVar, 
@@ -120,7 +176,7 @@ const DateSelector = () => {
                 onClick={() => {
                 changeDay(false)
             }}>
-                Subtract Date
+                -1 Day
             </button>
             <span className='px-2'>
             {date.dayOfWeek}, {date.month?.name} {date.dayOfMonth} {date.year}
@@ -130,7 +186,7 @@ const DateSelector = () => {
                 onClick={() => {
                 changeDay(true)
             }}>
-                Add Date
+                +1 Day
             </button>
         </p>
     )

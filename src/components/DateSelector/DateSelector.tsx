@@ -6,13 +6,6 @@ import {dateObjType} from './types.js'
 const DateSelector = () => {
     const {date, setDate} = useDate()
 
-    useEffect(() => {
-        const thisDate = new Date();
-        const nextDay = thisDate.toString();
-        const separateDate = nextDay.match()
-        console.log("test date", thisDate, "\n Next day: ",nextDay,"\n separate DAte: ", separateDate)
-    },[])
-
     function monthIndexCalc(
         index: number, 
         dayOfMonth: number, 
@@ -20,7 +13,7 @@ const DateSelector = () => {
         prevDayOfMonth: number,
         prevMonthObj?: {name:string, numberDays: number} | undefined, 
         ){
-        const {name, numberDays} = prevMonthObj ?? {};
+        const {numberDays} = prevMonthObj ?? {};
         let indexVal = index;
        
         if(prevDayOfMonth === 1 && dayOfMonth === numberDays){
@@ -60,10 +53,7 @@ const DateSelector = () => {
             
         return 11
         }
-        //if days of month is the last day then go to feb or jan
-        //if days of month is first day then same index or nov or dec
     }
-    //
 
     function selectMonthIndexCalc(
         index: number, 
@@ -79,7 +69,7 @@ const DateSelector = () => {
     }
 
     function dayOfMonthVarCalc(
-        obj: any, 
+        obj: dateObjType, 
         direction: Boolean, 
         months:{name:string, numberDays: number}[]
         ){
@@ -156,11 +146,10 @@ const DateSelector = () => {
 
             let dayIndexVar = changeDayOfWeek(direction, dateObj)
             let dayOfWeekVar = days[dayIndexVar];
-            //dont touch dayOfMonthVar 
             let dayOfMonthVar = selectDayOfMonthIndexCalc(monthIndex, dateObj, direction, months);
-
             let monthIndexVal = selectMonthIndexCalc(monthIndex, dayOfMonthVar, currMonthDays, prevDayOfMonth, months[monthIndex-1]);
             let monthVar = months[monthIndexVal];
+            
             return { 
                 ...dateObj, 
                 dayIndex: dayIndexVar, 

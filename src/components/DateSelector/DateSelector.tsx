@@ -132,7 +132,11 @@ const DateSelector = () => {
         :
         (newObj.dayIndex > 0 ? newObj.dayIndex-=1 : 6 );
     }
- 
+    
+    function changeWeek(dayIndex, dayOfMonth, month){ 
+        //+7
+        //-7
+    }
 
     function changeDay(direction: Boolean){
 
@@ -149,14 +153,17 @@ const DateSelector = () => {
             let dayOfMonthVar = selectDayOfMonthIndexCalc(monthIndex, dateObj, direction, months);
             let monthIndexVal = selectMonthIndexCalc(monthIndex, dayOfMonthVar, currMonthDays, prevDayOfMonth, months[monthIndex-1]);
             let monthVar = months[monthIndexVal];
-            
+
+            let yearVar = 2024;
+
             return { 
                 ...dateObj, 
                 dayIndex: dayIndexVar, 
                 monthIndex: monthIndexVal,
                 month: monthVar,
                 dayOfWeek: dayOfWeekVar, 
-                dayOfMonth: dayOfMonthVar
+                dayOfMonth: dayOfMonthVar,
+                year: yearVar
             }
         })
     }

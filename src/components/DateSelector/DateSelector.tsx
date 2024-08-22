@@ -1,192 +1,246 @@
 import { useEffect } from 'react'
 import { useDate } from '../../lib/contexts/date.js'
 import {months, days} from '../../lib/dateConverter.js'
-import {dateObjType} from './types.js' 
+import {dateObjType, selectDateParameterType} from './types.js' 
+import {
+        format, 
+        add, 
+        sub,
+        addYears, 
+        subYears, 
+        addMonths, 
+        subMonths, 
+        addWeeks, 
+        subWeeks, 
+        addDays,
+        subDays, 
+        getDate,
+        setMonth,
+        getYear, 
+        } from 'date-fns'
 
-const DateSelector = () => {
+
+let selectDateParameter: selectDateParameterType = {
+    day: false,
+    week: false,
+    month: false,
+    sixMonth: false, 
+    year: false
+}
+
+const DateSelector = ({dateChangeSelector}) => {
     const {date, setDate} = useDate()
 
-    function monthIndexCalc(
-        index: number, 
-        dayOfMonth: number, 
-        monthDays: number, 
-        prevDayOfMonth: number,
-        prevMonthObj?: {name:string, numberDays: number} | undefined, 
-        ){
-        const {numberDays} = prevMonthObj ?? {};
-        let indexVal = index;
-       
-        if(prevDayOfMonth === 1 && dayOfMonth === numberDays){
-            return indexVal-1
+    /*
+    I need to make a new obj.
+    1. set date / when you change day or week set it
+    2. set state
+    3. render on front end
+
+    let dateObj = {
+        fullDate,
+        weekday,
+        month,
+        year,
+
+    }
+    */
+
+    function changeDate(selectDateParameter: selectDateParameterType, direction: Boolean, thisDay: string){
+        //change day
+        const {day,week,month,sixMonth, year} = selectDateParameter
+        if(day){
+            let newDay = direction ? addDays(thisDay, 1) : subDays(thisDay, 1)
+            return newDay
         }
-        if(prevDayOfMonth === monthDays && dayOfMonth === 1){
-            return indexVal+1
-        } 
-        if(dayOfMonth >= 1 && dayOfMonth < monthDays){
+        if(week){
+            let newWeek = direction ? addWeeks(thisDay, 1) : subWeeks(thisDay, 1)
+            return newWeek
         }
+        if(month){
+            //if 1st week, go to 1st week of next month on same weekday
+            let newMonth = direction ? addMonths(thisDay, 1) : subMonths(thisDay, 1)
+            return newMonth 
+        }
+        if(sixMonth){
+            //if 1st week, go to 1st week of next month on same weekday
+            let newSixMonth = direction ? addMonths(thisDay, 6) : subMonths(thisDay, 6)
+            return newSixMonth 
+        }
+        if(year){
+            //if 1st week, go to 1st week of next month on same weekday
+            let newYear = direction ? addYears(thisDay, 1) : subYears(thisDay, 1)
+            return newYear 
+        }
+    }
+
+    function changeDay(selectDateParameter: selectDateParameterType, direction: Boolean){
+        let thisDay: string = format(date.todayFullDate, "Pp");
+        let newDay: Date = changeDate(selectDateParameter, direction, thisDay)
         
-        return indexVal
-    }
+        let month = format(newDay, "LLLL")
+        let year = getYear(newDay)
+        let dayOfMonth = getDate(newDay)
+        let dayOfWeek = format(newDay, "EEEE")
 
-    function JanOrDecMonthIndexCalc(
-        index: number,
-        dayOfMonth: number, 
-        prevDayOfMonth: number
-        ){
-        if(index === 0){
-            if(dayOfMonth === 31 && prevDayOfMonth === 1){
-                return 11
+        setDate((dateObj: dateObjType) => {
+            return { 
+                ...dateObj,
+                todayFullDate: newDay,
+                month,
+                year,
+                dayOfMonth,
+                dayOfWeek 
             }
-            if(dayOfMonth === 1 && prevDayOfMonth === 31){
-                return 1
-            }
-            
-        return 0
-        }
-        if(index === 11){
-            if(dayOfMonth === 1 && prevDayOfMonth === 31){
-                return 0
-            }
-            if(dayOfMonth === 30 && prevDayOfMonth === 1){
-                return 10
-            }
-            
-        return 11
-        }
+        })
     }
 
-    function selectMonthIndexCalc(
-        index: number, 
-        dayOfMonth: number, 
-        monthDays: number, 
-        prevDayOfMonth: number,
-        prevMonthObj?: {name:string, numberDays: number}, 
-        ){
-        if(index === 0 || index === 11){
-            return JanOrDecMonthIndexCalc(index, dayOfMonth, prevDayOfMonth)
-        }
-        return monthIndexCalc(index, dayOfMonth, monthDays, prevDayOfMonth, prevMonthObj)
-    }
-
-    function dayOfMonthVarCalc(
-        obj: dateObjType, 
-        direction: Boolean, 
-        months:{name:string, numberDays: number}[]
-        ){
-        //if day of month is less then the number of days
-        let newObj = {...obj}
-        let newDayOfMonth = newObj.dayOfMonth;
-        direction ? newDayOfMonth+=1 : newDayOfMonth-=1 
-        //console.log("dayofmonthvarcals current month days, ", newDayOfMonth,", prev month days: ",months[newObj.monthIndex-1]["numberDays"])
-        if(newDayOfMonth > 0 && newDayOfMonth <= months[newObj.monthIndex]["numberDays"]) { 
-            return newDayOfMonth
-        }else{
-            //change month index to change month
-            return direction ? 1 : months[newObj.monthIndex-1]["numberDays"]
-        }
-    }
-
-    function JanOrDecMonthDayCalc(
-        index: number, 
-        dateObj: dateObjType, 
-        direction: Boolean){
-        let newObj = {...dateObj}
-        let newDayOfMonth = newObj.dayOfMonth;
-        direction ? newDayOfMonth+=1 : newDayOfMonth-=1 
-
-        if(index === 0){
-            if(newDayOfMonth > 0 && newDayOfMonth <= months[0]["numberDays"]) { 
-                return newDayOfMonth
-            }else{
-                //change month index to change month
-                return direction ? 1 : months[11]["numberDays"]
-            }
-        }
-        if(index === 11){
-            if(newDayOfMonth > 0 && newDayOfMonth <= months[11]["numberDays"]) { 
-                return newDayOfMonth
-            }else{
-                //change month index to change month
-                return direction ? 1 : months[10]["numberDays"]
-            }
-        }
-    }
-
-    function selectDayOfMonthIndexCalc(
-        monthIndex: number,
-        obj: any, 
-        direction: Boolean, 
-        months:{name:string, numberDays: number}[]
-        ){
-            console.log("monthIndex, ", monthIndex)
-        if(monthIndex === 0 || monthIndex === 11){
-            return JanOrDecMonthDayCalc(monthIndex, obj, direction)
-        }
-        return dayOfMonthVarCalc(obj, direction, months)
-    }
-
-    function changeDayOfWeek(direction: Boolean, dateObj: {dayIndex:number}){
-        let newObj = {...dateObj}
-       return direction ? 
-        (newObj.dayIndex < 6 ? newObj.dayIndex+=1 : 0 )
-        :
-        (newObj.dayIndex > 0 ? newObj.dayIndex-=1 : 6 );
-    }
-    
-    function changeWeek(dayIndex, dayOfMonth, month){ 
-        //+7
-        //-7
-    }
-
-    function changeDay(direction: Boolean){
-
-        setDate((dateObj: any) => {
-            //monthIndex(which month), 
-            //dayOfMonth(current numbered day of the month), 
-            //numberDays(total number of days in current month)
-            let monthIndex = dateObj.monthIndex;
-            let prevDayOfMonth = dateObj.dayOfMonth;
-            let currMonthDays = dateObj.month.numberDays;
-
-            let dayIndexVar = changeDayOfWeek(direction, dateObj)
-            let dayOfWeekVar = days[dayIndexVar];
-            let dayOfMonthVar = selectDayOfMonthIndexCalc(monthIndex, dateObj, direction, months);
-            let monthIndexVal = selectMonthIndexCalc(monthIndex, dayOfMonthVar, currMonthDays, prevDayOfMonth, months[monthIndex-1]);
-            let monthVar = months[monthIndexVal];
-
-            let yearVar = 2024;
+    function handleSetMonth(index: number){
+        setDate((dateObj: dateObjType) => {
+            let thisDay = dateObj.todayFullDate;
+            let newMonth = setMonth(thisDay, index)
+ 
+            let month = format(newMonth, "LLLL")
+            let year = getYear(newMonth)
+            let dayOfMonth = getDate(newMonth)
+            let dayOfWeek = format(newMonth, "EEEE")
 
             return { 
-                ...dateObj, 
-                dayIndex: dayIndexVar, 
-                monthIndex: monthIndexVal,
-                month: monthVar,
-                dayOfWeek: dayOfWeekVar, 
-                dayOfMonth: dayOfMonthVar,
-                year: yearVar
+                ...dateObj,
+                todayFullDate: newMonth,
+                month,
+                year,
+                dayOfMonth,
+                dayOfWeek 
             }
         })
     }
 
     return (
         <p className='text-center text-secondary-content'>
+            {
+            dateChangeSelector.value === 'year' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, year: true}, false)
+                }}>
+                    prev Year
+                </button>
+            }
+            {
+            dateChangeSelector.value === 'month' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, sixMonth: true}, false)
+                }}>
+                    -6 Mo
+                </button>
+            }
+            {
+            dateChangeSelector.value === 'month' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, month: true}, false)
+                }}>
+                    -1 Mo
+                </button>
+            }
+             {
+            dateChangeSelector.value === 'week' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, week: true}, false)
+                }}>
+                    Prev Week
+                </button>
+            }
             <button 
                 className='btn btn-2 my-2'
                 onClick={() => {
-                changeDay(false)
+                changeDay({...selectDateParameter, day: true}, false)
             }}>
                 -1 Day
             </button>
             <span className='px-2'>
-            {date.dayOfWeek}, {date.month?.name} {date.dayOfMonth} {date.year}
+            {date.dayOfWeek}
+
+            <div className='px-2 dropdown dropdown-bottom dropdown-end'>
+                <div tabIndex={0} role="button" className="btn m-1 z-50">
+                    {date.month}
+                </div>
+                <ul
+                    tabIndex={0}
+                    className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-4 w-52 p-2 shadow z-50">
+                    {
+                        months.map((months: {name: string, numberDays: number}, index: number) => {
+                            return (
+                                <li onClick={() => {
+                                    console.log("click") 
+                                    handleSetMonth(index)
+                                }}
+                                className="bg-base-100 "
+                                >
+                                    <a>{months.name}</a>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            </div> 
+
+            <span className=''> {date.dayOfMonth}</span> {date.year}
             </span>
             <button 
                 className='btn btn-2 my-2'
                 onClick={() => {
-                changeDay(true)
+                changeDay({...selectDateParameter, day: true},true)
             }}>
                 +1 Day
             </button>
+            {
+            dateChangeSelector.value === 'week' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, week: true}, true)
+                }}>
+                    Next Week
+                </button>
+            }
+            {
+            dateChangeSelector.value === 'month' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, month: true}, true)
+                }}>
+                    +1 Mo
+                </button>
+            }
+            {
+            dateChangeSelector.value === 'month' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, sixMonth: true}, true)
+                }}>
+                    +6 Mo
+                </button>
+            }
+            {
+            dateChangeSelector.value === 'year' &&
+                <button 
+                    className='btn btn-2 my-2'
+                    onClick={() => {
+                    changeDay({...selectDateParameter, year: true}, true)
+                }}>
+                    next Year
+                </button>
+            }
         </p>
     )
 }

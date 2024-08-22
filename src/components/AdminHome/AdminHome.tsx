@@ -6,13 +6,66 @@ import { useDate } from '../../lib/contexts/date.js'
 
 
 const AdminHome = () => {
+  const [dateChangeSelector, selectDateChangeSelector] = useState({value: ''})
 
-  console.log("dummy", dummyData)
+  function handleDateChangeSelector(e){
+    selectDateChangeSelector({
+      value: e.target.value
+    })
+  }
+
   return (
     <div className='home-container'>
       <Navbar />
       <div className='card bg-base-300 p-2'>
-        <DateSelector/>
+        <form className='flex gap-3 flex-col px-3 justify-center items-center'
+          onChange={e => handleDateChangeSelector(e)}
+        >
+          <h5>How do you want to change your date?</h5>
+          <div className='flex gap-4'>
+            <label className='flex gap-2'>
+              <input 
+                name="dateSelector" 
+                type="radio" 
+                id="radio-day" 
+                value="day"
+                checked={dateChangeSelector.value === 'day'}
+              />
+              Day
+            </label>
+            <label className='flex gap-2'>
+              <input 
+                name="dateSelector" 
+                type="radio" 
+                id="radio-week" 
+                value="week"
+                checked={dateChangeSelector.value === 'week'}
+              />
+              Week
+            </label>
+            <label className='flex gap-2'>
+              <input 
+                name="dateSelector" 
+                type="radio" 
+                id="radio-month" 
+                value="month"
+                checked={dateChangeSelector.value === 'month'}
+              />
+              Month
+            </label>
+            <label className='flex gap-2'>
+              <input 
+                name="dateSelector" 
+                type="radio" 
+                id="radio-year" 
+                value="year"
+                checked={dateChangeSelector.value === 'year'}  
+              />
+              Year
+            </label>
+          </div>
+        </form>
+      <DateSelector dateChangeSelector={dateChangeSelector}/>
       {
         dummyData.map((data, index) => {
           

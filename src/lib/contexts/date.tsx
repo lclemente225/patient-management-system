@@ -8,7 +8,6 @@ const DateContext = createContext(null);
 export const DateProvider = ({ children }) => {
   const [date, setDate] = useState({});
 
-  console.log(format(new Date(), "Pp"))
   const todayFullDate = new Date()
   let month = format(todayFullDate, "LLLL")
   let year = getYear(todayFullDate)

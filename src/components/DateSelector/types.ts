@@ -14,3 +14,7 @@ export type selectDateParameterType = {
     sixMonth: Boolean, 
     year: Boolean
 }
+
+export interface DateChangeSelectorInterface {
+    value: string
+  }

@@ -2,13 +2,14 @@ import React, {useState, useEffect} from 'react'
 import Navbar from '../Navbar/Navbar'
 import DateSelector from '../DateSelector/DateSelector.js'
 import dummyData from '../../dummydata.js'
-import { useDate } from '../../lib/contexts/date.js'
+import { DateChangeSelectorInterface } from '../DateSelector/types.js'
 
 
 const AdminHome = () => {
-  const [dateChangeSelector, selectDateChangeSelector] = useState({value: ''})
+  const [dateChangeSelector, selectDateChangeSelector] = useState
+  <DateChangeSelectorInterface>({value: ''})
 
-  function handleDateChangeSelector(e){
+  function handleDateChangeSelector(e: React.ChangeEvent<HTMLInputElement>){
     selectDateChangeSelector({
       value: e.target.value
     })
@@ -18,8 +19,8 @@ const AdminHome = () => {
     <div className='home-container'>
       <Navbar />
       <div className='card bg-base-300 p-2'>
-        <form className='flex gap-3 flex-col px-3 justify-center items-center'
-          onChange={e => handleDateChangeSelector(e)}
+        <form 
+          className='flex gap-3 flex-col px-3 justify-center items-center'
         >
           <h5>How do you want to change your date?</h5>
           <div className='flex gap-4'>
@@ -30,6 +31,7 @@ const AdminHome = () => {
                 id="radio-day" 
                 value="day"
                 checked={dateChangeSelector.value === 'day'}
+                onChange={e => handleDateChangeSelector(e)}
               />
               Day
             </label>
@@ -40,6 +42,7 @@ const AdminHome = () => {
                 id="radio-week" 
                 value="week"
                 checked={dateChangeSelector.value === 'week'}
+                onChange={e => handleDateChangeSelector(e)}
               />
               Week
             </label>
@@ -50,6 +53,7 @@ const AdminHome = () => {
                 id="radio-month" 
                 value="month"
                 checked={dateChangeSelector.value === 'month'}
+                onChange={e => handleDateChangeSelector(e)}
               />
               Month
             </label>
@@ -60,6 +64,7 @@ const AdminHome = () => {
                 id="radio-year" 
                 value="year"
                 checked={dateChangeSelector.value === 'year'}  
+                onChange={e => handleDateChangeSelector(e)}
               />
               Year
             </label>

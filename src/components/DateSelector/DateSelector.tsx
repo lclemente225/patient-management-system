@@ -16,7 +16,8 @@ import {
         subDays, 
         getDate,
         setMonth,
-        getYear, 
+        getYear,
+        getDaysInMonth, 
         } from 'date-fns'
 
 
@@ -31,20 +32,9 @@ let selectDateParameter: selectDateParameterType = {
 const DateSelector = ({dateChangeSelector}) => {
     const {date, setDate} = useDate()
 
-    /*
-    I need to make a new obj.
-    1. set date / when you change day or week set it
-    2. set state
-    3. render on front end
+    let daysInMonth = getDaysInMonth(date.todayFullDate)
+    let daysInMonthArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-    let dateObj = {
-        fullDate,
-        weekday,
-        month,
-        year,
-
-    }
-    */
 
     function changeDate(selectDateParameter: selectDateParameterType, direction: Boolean, thisDay: string){
         //change day
@@ -116,6 +106,13 @@ const DateSelector = ({dateChangeSelector}) => {
         })
     }
 
+    function handleSetDay(dayNumber){
+        //need to ohave an array of all lthe day of the month
+        
+        let rangeCheck = range(1,check)
+        console.log("checking days", check, rangeCheck)
+    }
+
     return (
         <p className='text-center text-secondary-content'>
             {
@@ -162,27 +159,32 @@ const DateSelector = ({dateChangeSelector}) => {
                 className='btn btn-2 my-2'
                 onClick={() => {
                 changeDay({...selectDateParameter, day: true}, false)
+                handleSetDay()
             }}>
                 -1 Day
             </button>
             <span className='px-2'>
             {date.dayOfWeek}
 
-            <div className='px-2 dropdown dropdown-bottom dropdown-end'>
-                <div tabIndex={0} role="button" className="btn m-1 z-50">
+            <div className='mx-2 dropdown dropdown-bottom'>
+                <div 
+                    tabIndex={0} 
+                    role="button" 
+                    className="btn font-light bg-base-200 border-0 m-1 z-50"
+                >
                     {date.month}
                 </div>
                 <ul
                     tabIndex={0}
                     className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-4 w-52 p-2 shadow z-50">
                     {
-                        months.map((months: {name: string, numberDays: number}, index: number) => {
+                        months.map((
+                            months: {name: string, numberDays: number}, 
+                            index: number
+                            ) => {
                             return (
-                                <li onClick={() => {
-                                    console.log("click") 
-                                    handleSetMonth(index)
-                                }}
-                                className="bg-base-100 "
+                                <li onClick={() => handleSetMonth(index)}
+                                className="bg-base-100 hover:bg-base-300 "
                                 >
                                     <a>{months.name}</a>
                                 </li>
@@ -191,8 +193,34 @@ const DateSelector = ({dateChangeSelector}) => {
                     }
                 </ul>
             </div> 
-
-            <span className=''> {date.dayOfMonth}</span> {date.year}
+            <div className='mx-2 dropdown dropdown-bottom'>
+                <div 
+                    tabIndex={0} 
+                    role="button" 
+                    className="btn font-light bg-base-200 border-0 m-1 z-50"
+                >
+                    {date.dayOfMonth}
+                </div>
+                <ul
+                    tabIndex={0}
+                    className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-4 w-52 p-2 shadow z-50">
+                    {
+                        months.map((
+                            months: {name: string, numberDays: number}, 
+                            index: number
+                            ) => {
+                            return (
+                                <li onClick={() => handleSetMonth(index)}
+                                className="bg-base-100 hover:bg-base-300 "
+                                >
+                                    <a>{months.name}</a>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            </div> 
+            {date.year}
             </span>
             <button 
                 className='btn btn-2 my-2'

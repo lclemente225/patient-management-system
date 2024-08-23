@@ -6,7 +6,7 @@ import {format, getMonth, getYear} from 'date-fns'
 const DateContext = createContext(null);
 
 export const DateProvider = ({ children }) => {
-  const [date, setDate] = useState({});
+  const [date, setDateState] = useState({});
 
   const todayFullDate = new Date()
   let month = format(todayFullDate, "LLLL")
@@ -23,12 +23,12 @@ export const DateProvider = ({ children }) => {
   }
 
 useEffect(() => {
-  setDate(today)
+  setDateState(today)
   console.log("useeffect wat", date)
 }, [])
 
   return (
-    <DateContext.Provider value={{ date, setDate }}>
+    <DateContext.Provider value={{ date, setDateState }}>
       {children}
     </DateContext.Provider>
   );

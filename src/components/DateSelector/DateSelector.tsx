@@ -19,6 +19,7 @@ import {
         setMonth,
         getYear,
         getDaysInMonth, 
+        eachWeekendOfMonth
         } from 'date-fns'
 
 
@@ -33,9 +34,34 @@ let selectDateParameter: selectDateParameterType = {
 const DateSelector = ({dateChangeSelector}) => {
     const {date, setDateState} = useDate()
 
-    let daysInMonth = getDaysInMonth(date.todayFullDate)
-    let daysInMonthArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    function daysInMonthTotal() {
+        let emptyArray = []
+        let fullDate = date.todayFullDate
+        let daysInMonth = getDaysInMonth(fullDate)
+        let daysInMonthArray = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+        for(let day of daysInMonthArray){
+            let dayOfMonthSet = setDate(fullDate,Number(day))
+            let weekDayOfDay = format(dayOfMonthSet, "E")
+            let dayOfMonth = getDate(dayOfMonthSet)
 
+            let dayObj = {
+                dayName: weekDayOfDay,
+                dayOfMonth
+            }
+            emptyArray.push(dayObj)
+        }
+
+        return emptyArray
+    }
+
+    function weeksInMonth(){
+        let fullDate = date.todayFullDate
+        let weekendsArray = eachWeekendOfMonth(fullDate)
+        let weekQuantityArray = Array.from({ length: (weekendsArray.length/2) }, (_, i) => i + 1)
+        return weekQuantityArray
+    }
+
+    let daysInMonthArray = daysInMonthTotal();
 
     function changeDate(selectDateParameter: selectDateParameterType, direction: Boolean, thisDay: string){
         //change day
@@ -112,7 +138,6 @@ const DateSelector = ({dateChangeSelector}) => {
         setDateState((dateObj: dateObjType) => {
             let thisDay = dateObj.todayFullDate;
             let newDay = setDate(thisDay, dayNumber)
-            console.log("setday", newDay, thisDay, dayNumber)
  
             let month = format(newDay, "LLLL")
             let year = getYear(newDay)
@@ -131,7 +156,7 @@ const DateSelector = ({dateChangeSelector}) => {
     }
 
     return (
-        <p className='text-center text-secondary-content'>
+        <div className='text-center text-secondary-content'>
             {
             dateChangeSelector.value === 'year' &&
                 <button 
@@ -199,7 +224,9 @@ const DateSelector = ({dateChangeSelector}) => {
                             index: number
                             ) => {
                             return (
-                                <li onClick={() => handleSetMonth(index)}
+                                <li 
+                                    key={`${months.name}-month`}
+                                    onClick={() => handleSetMonth(index)}
                                 className="bg-base-100 hover:bg-base-300"
                                 >
                                     <a>{months.name}</a>
@@ -209,6 +236,7 @@ const DateSelector = ({dateChangeSelector}) => {
                     }
                 </ul>
             </div> 
+
             <div className='mx-2 dropdown dropdown-bottom dropdown-end'>
                 <div 
                     tabIndex={0} 
@@ -219,36 +247,47 @@ const DateSelector = ({dateChangeSelector}) => {
                 </div>
                 <ul
                     tabIndex={0}
-                    className="menu 
+                    className="
+                    menu 
                     dropdown-content
                     bg-base-100 
                     border-2
                     rounded-box 
                     z-50 
                     mt-4 
-                    w-64
+                    w-[340px]
                     h-max 
                     p-2
-                    shadow 
                     flex
                     flex-row
                     flex-wrap
+                    shadow 
                     ">
                     {
-                        daysInMonthArray.map((
-                            dayNumber: number
-                            ) => {
-                            return (
-                                <li onClick={() => handleSetDay(dayNumber)}
-                                className="w-min h-max mx-1"
-                                >
-                                    <a 
-                                        className="bg-base-100 m-0 w-9 flex items-center justify-center">
-                                        {dayNumber}
-                                    </a>
-                                </li>
-                            )
-                        })
+                            daysInMonthArray.map((
+                                {
+                                dayName,
+                                dayOfMonth
+                                },
+                                index
+                                ) => {
+                                return (
+                                    <li  
+                                        onClick={() => { 
+                                        handleSetDay(dayOfMonth)
+                                    }}
+                                    key={`${index}-${months.name}`}
+                                    className="w-min h-max mx-1"
+                                    >
+                                        {dayName}
+                                        <a 
+                                            className="bg-base-100 m-0 w-9 flex items-center justify-center">
+                                            {dayOfMonth}
+                                        </a>
+                                    </li>
+                                )
+                                })
+                        
                     }
                 </ul>
             </div> 
@@ -301,7 +340,7 @@ const DateSelector = ({dateChangeSelector}) => {
                     next Year
                 </button>
             }
-        </p>
+        </div>
     )
 }
 

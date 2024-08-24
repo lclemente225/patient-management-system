@@ -26,6 +26,7 @@ const AdminHome = () => {
           <div className='flex gap-4'>
             <label className='flex gap-2'>
               <input 
+                key="radio-day"
                 name="dateSelector" 
                 type="radio" 
                 id="radio-day" 
@@ -37,6 +38,7 @@ const AdminHome = () => {
             </label>
             <label className='flex gap-2'>
               <input 
+                key="radio-week"
                 name="dateSelector" 
                 type="radio" 
                 id="radio-week" 
@@ -48,6 +50,7 @@ const AdminHome = () => {
             </label>
             <label className='flex gap-2'>
               <input 
+                key="radio-month" 
                 name="dateSelector" 
                 type="radio" 
                 id="radio-month" 
@@ -59,6 +62,7 @@ const AdminHome = () => {
             </label>
             <label className='flex gap-2'>
               <input 
+                key="radio-year"
                 name="dateSelector" 
                 type="radio" 
                 id="radio-year" 
@@ -72,7 +76,7 @@ const AdminHome = () => {
         </form>
       <DateSelector dateChangeSelector={dateChangeSelector}/>
       {
-        dummyData.map((data, index) => {
+        dummyData.map((data, index:number) => {
           
           return (
             <>
@@ -82,6 +86,7 @@ const AdminHome = () => {
               {data.firstName}
             </div>
             <div className="collapse-content border-green-200">
+              <input type="text"/>
               <p>{data.appointmentDate}</p>
             </div>
           </div>

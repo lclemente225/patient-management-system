@@ -4,8 +4,6 @@ import {months, days} from '../../lib/dateConverter.js'
 import {dateObjType, selectDateParameterType} from './types.js' 
 import {
         format, 
-        add, 
-        sub,
         addYears, 
         subYears, 
         addMonths, 
@@ -206,7 +204,7 @@ const DateSelector = ({dateChangeSelector}) => {
             </button>
             <span className='px-2'>
             {date.dayOfWeek}
-
+    {/*Start of month selector */}
             <div className='mx-2 dropdown dropdown-bottom'>
                 <div 
                     tabIndex={0} 
@@ -217,7 +215,7 @@ const DateSelector = ({dateChangeSelector}) => {
                 </div>
                 <ul
                     tabIndex={0}
-                    className="menu border-2 dropdown-content bg-base-100 rounded-box z-50 mt-4 w-52 p-2 shadow z-50">
+                    className="menu border-2 dropdown-content bg-base-100 rounded-box z-50 mt-4 w-52 h-64 p-2 shadow z-50">
                     {
                         months.map((
                             months: {name: string, numberDays: number}, 
@@ -236,7 +234,8 @@ const DateSelector = ({dateChangeSelector}) => {
                     }
                 </ul>
             </div> 
-
+    {/*End of month selector */}
+    {/*Start of day selector */}
             <div className='mx-2 dropdown dropdown-bottom dropdown-end'>
                 <div 
                     tabIndex={0} 
@@ -264,13 +263,14 @@ const DateSelector = ({dateChangeSelector}) => {
                     shadow 
                     ">
                     {
-                            daysInMonthArray.map((
-                                {
-                                dayName,
-                                dayOfMonth
-                                },
-                                index
-                                ) => {
+                        daysInMonthArray.map((
+                            {
+                            dayName,
+                            dayOfMonth
+                            },
+                            index
+                            ) => {
+                                let currentDay = date.dayOfMonth
                                 return (
                                     <li  
                                         onClick={() => { 
@@ -279,18 +279,21 @@ const DateSelector = ({dateChangeSelector}) => {
                                     key={`${index}-${months.name}`}
                                     className="w-min h-max mx-1"
                                     >
-                                        {dayName}
+                                        {index < 7 && dayName}
                                         <a 
-                                            className="bg-base-100 m-0 w-9 flex items-center justify-center">
+                                            className={`bg-base-100 m-0 w-9 flex items-center justify-center 
+                                            ${dayOfMonth === currentDay && 'bg-base-300'}`}
+                                        >
                                             {dayOfMonth}
                                         </a>
                                     </li>
                                 )
-                                })
+                            })
                         
                     }
                 </ul>
             </div> 
+            {/*End of day selector */}
             {date.year}
             </span>
             <button 

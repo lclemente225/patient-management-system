@@ -1,8 +1,8 @@
-const dummyData = [
+export const dummyData: dummyDataType[] = [
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "May 30 2024",
+        appointmentDate:" new Date(2024,05, 30)",
         appointmentTime: "1200",
         appointmentType: "composite"
     },
@@ -22,8 +22,13 @@ const dummyData = [
     }
 ]
 
-export default dummyData 
-
+export type dummyDataType = {
+    firstName:string, 
+    cell:string, 
+    appointmentDate:string,
+    appointmentTime:string,
+    appointmentType:string
+}
 /*
 module.exports = {
   "primary": "--p",

@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import Navbar from '../Navbar/Navbar'
 import DateSelector from '../DateSelector/DateSelector.js'
-import dummyData from '../../dummydata.js'
+import { useDate } from '../../lib/contexts/date.js'
 import { DateChangeSelectorInterface } from '../DateSelector/types.js'
-
+import {dummyData, dummyDataType} from '../../dummydata.ts'
 
 const AdminHome = () => {
+  const {date} = useDate()
   const [dateChangeSelector, selectDateChangeSelector] = useState
   <DateChangeSelectorInterface>({value: ''})
 
@@ -76,8 +77,12 @@ const AdminHome = () => {
         </form>
       <DateSelector dateChangeSelector={dateChangeSelector}/>
       {
-        dummyData.map((data, index:number) => {
-          
+        dummyData.map((
+          data:dummyDataType, 
+          index:number) => {
+          if(date.todayFullDate === data.appointmentDate){
+            console.log("this is today")
+          }
           return (
             <>
           <div className="collapse bg-base-100">

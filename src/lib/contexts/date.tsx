@@ -24,7 +24,6 @@ export const DateProvider = ({ children }) => {
 
 useEffect(() => {
   setDateState(today)
-  console.log("useeffect wat", date)
 }, [])
 
   return (

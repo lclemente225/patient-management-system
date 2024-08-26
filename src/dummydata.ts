@@ -1,33 +1,53 @@
-export const dummyData: dummyDataType[] = [
+export const dummyData: dummyDataType[] = [ 
+    {
+    firstName: "Lawrence",
+    cell: "408-687-9183",
+    appointmentDate:new Date(),
+    appointmentTime: "12pm",
+    appointmentType: "composite",
+    confirmed: true
+    }, 
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate:" new Date(2024,05, 30)",
+        appointmentDate:new Date(2024, 5, 30),
         appointmentTime: "1200",
-        appointmentType: "composite"
+        appointmentType: "composite",
+        confirmed: true
+    }, 
+    {
+        firstName: "Jorence",
+        cell: "408-687-9133",
+        appointmentDate:new Date(2024, 5, 30),
+        appointmentTime: "1200",
+        appointmentType: "composite",
+        confirmed: true
     },
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "January 30 2024",
+        appointmentDate:new Date(2024, 1, 30),
         appointmentTime: "1200",
-        appointmentType: "composite"
+        appointmentType: "composite",
+        confirmed: true
     },
     {
         firstName: "Lawrence",
         cell: "408-687-9183",
-        appointmentDate: "February 30 2024",
+        appointmentDate:new Date(2024, 6, 30),
         appointmentTime: "1200",
-        appointmentType: "composite"
+        appointmentType: "composite",
+        confirmed: true
     }
 ]
 
 export type dummyDataType = {
     firstName:string, 
     cell:string, 
-    appointmentDate:string,
+    appointmentDate:Date,
     appointmentTime:string,
-    appointmentType:string
+    appointmentType:string,
+    confirmed: Boolean
 }
 /*
 module.exports = {

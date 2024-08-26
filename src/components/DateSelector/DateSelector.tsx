@@ -51,14 +51,6 @@ const DateSelector = ({dateChangeSelector}) => {
 
         return emptyArray
     }
-
-    function weeksInMonth(){
-        let fullDate = date.todayFullDate
-        let weekendsArray = eachWeekendOfMonth(fullDate)
-        let weekQuantityArray = Array.from({ length: (weekendsArray.length/2) }, (_, i) => i + 1)
-        return weekQuantityArray
-    }
-
     let daysInMonthArray = daysInMonthTotal();
 
     function changeDate(selectDateParameter: selectDateParameterType, direction: Boolean, thisDay: string){

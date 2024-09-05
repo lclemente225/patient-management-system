@@ -1,6 +1,11 @@
 import React from 'react'
 
 const SmsFn = ({phoneNumber}) => {
+
+  
+
+
+
   return (
     <>
     <form onSubmit={e => e.preventDefault()} className="w-7/12 flex flex-col items-center">

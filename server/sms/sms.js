@@ -10,11 +10,12 @@ const twilioAccountSid = process.env.TWILIO_USER_ID;
 const twilioAuthToken = process.env.TWILIO_KEY;
 const sourcePhone = process.env.TWILIO_NUM
 const client = twilio(twilioAccountSid, twilioAuthToken);
+const messageResponse = twilio.twiml.MessagingResponse
 
 async function createMessage(req, res) {
   try{
       const message = await client.messages.create({
-        body: "This is the text beother",
+        body: "You have a freakin appointment tomorrow bro",
         from: sourcePhone,
         to: "+14086878163",
        });
@@ -24,7 +25,16 @@ async function createMessage(req, res) {
   }
 }
 
+router.post("/incoming-message", (req, res) => {
+  const twiml = new messageResponse();
+  twiml.message("Thank you for confirming your appointment.");
+  res.end(twiml.toString());
+});
+
+router.post('/send-SMS', (req, res) => createMessage(req, res))
+
 router.get('/test', (req, res) => {
   return res.json({"message": "sms works"})
 })
+
 export {router}

@@ -1,6 +1,5 @@
 // context/AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
-import {months, days} from '../dateConverter.js'
 import {format, getMonth, getYear} from 'date-fns'
 
 const DateContext = createContext(null);

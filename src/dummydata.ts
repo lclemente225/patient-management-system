@@ -50,6 +50,14 @@ export type dummyDataType = {
     confirmed: Boolean
 }
 /*
+"cors": "^2.8.5",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "messagebird": "^4.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "twilio": "^5.3.0"
 module.exports = {
   "primary": "--p",
   "primary-content": "--pc",

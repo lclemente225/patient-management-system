@@ -1,35 +1,30 @@
 import { Router } from 'express';
+import twilio from 'twilio';
+import dotenv from 'dotenv'
 
-/* Number verification start */
+const router = Router();
+const envDir = '/server/.env'; 
+const path = process.cwd() + envDir;
+dotenv.config({path});
+const twilioAccountSid = process.env.TWILIO_USER_ID;
+const twilioAuthToken = process.env.TWILIO_KEY;
+const sourcePhone = process.env.TWILIO_NUM
+const client = twilio(twilioAccountSid, twilioAuthToken);
 
-// URL of the JSON file
-const user_json_url = "URL_OF_YOUR_JSON_FILE";
+async function createMessage(req, res) {
+  try{
+      const message = await client.messages.create({
+        body: "This is the text beother",
+        from: sourcePhone,
+        to: "+14086878163",
+       });
+  return res.json({"status": 200, "message": message.body})
+  } catch {
+    return res.json({"status": 500, "message": "Server Error"})
+  }
+}
 
-Router.get(user_json_url, (res) => {
-  let data = '';
-
-  // A chunk of data has been received.
-  res.on('data', (chunk) => {
-    data += chunk;
-  });
-
-  // The whole response has been received.
-  res.on('end', () => {
-    const jsonData = JSON.parse(data);
-
-    // Access user_country_code and user_phone_number
-    const user_country_code = jsonData.user_country_code;
-    const user_phone_number = jsonData.user_phone_number;
-    const user_first_name = jsonData.user_first_name;
-    const user_last_name = jsonData.user_last_name;
-
-    console.log("User Country Code:", user_country_code);
-    console.log("User Phone Number:", user_phone_number);
-    console.log("User First Name:", user_first_name);
-    console.log("User Last name:", user_last_name);
-  });
-
-}).on("error", (err) => {
-  console.log("Error: " + err.message);
-});
-/* Number verification end */
+router.get('/test', (req, res) => {
+  return res.json({"message": "sms works"})
+})
+export {router}

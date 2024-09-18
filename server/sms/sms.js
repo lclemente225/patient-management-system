@@ -10,7 +10,9 @@ const twilioAccountSid = process.env.TWILIO_USER_ID;
 const twilioAuthToken = process.env.TWILIO_KEY;
 const sourcePhone = process.env.TWILIO_NUM
 const client = twilio(twilioAccountSid, twilioAuthToken);
-const messageResponse = twilio.twiml.MessagingResponse
+const messageResponse = twilio.twiml.MessagingResponse;
+
+//functions
 
 async function createMessage(req, res) {
   try{
@@ -25,11 +27,13 @@ async function createMessage(req, res) {
   }
 }
 
+//routes
+
 router.post("/incoming-message", (req, res) => {
   const twiml = new messageResponse();
   twiml.message("Thank you for confirming your appointment.");
   res.end(twiml.toString());
-});
+})
 
 router.post('/send-SMS', (req, res) => createMessage(req, res))
 
